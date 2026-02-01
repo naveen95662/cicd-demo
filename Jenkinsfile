@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_USERNAME = 'naveen95662'
+        DOCKERHUB_USERNAME = 'naveen9566'
         IMAGE_NAME = 'cicd-demo-app'
         IMAGE_TAG = 'latest'
     }
