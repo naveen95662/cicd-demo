@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    tools {
+        jdk 'jdk21'
+        maven 'maven3'
+    }
+
     stages {
 
         stage('Checkout') {
@@ -11,23 +16,32 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'mvn clean package'
+                bat 'mvn clean package'
             }
         }
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t cicd-demo-app .'
+                bat 'docker build -t cicd-demo-app .'
             }
         }
 
-        stage('Deploy') {
+        stage('Run Container') {
             steps {
-                sh '''
-                docker rm -f cicd-demo || true
-                docker run -d -p 8081:8080 --name cicd-demo cicd-demo-app
+                bat '''
+                docker rm -f cicd-demo-container || exit 0
+                docker run -d -p 8081:8080 --name cicd-demo-container cicd-demo-app
                 '''
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully'
+        }
+        failure {
+            echo 'Pipeline failed'
         }
     }
 }
